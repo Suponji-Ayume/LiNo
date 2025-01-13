@@ -270,8 +270,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 li_weight = torch.zeros(self.args.seq_len, self.args.pred_len).float().to(self.device)
                 no_weight = torch.zeros(self.args.seq_len, self.args.pred_len).float().to(self.device)
                 for i in range(self.args.seq_len):
-                    outputs,pred_linears,pred_non_linears = self.model(batch_x,1)
+                    batch_x = torch.zeros(self.args.batch_size,self.args.seq_len, self.args.enc_in).float().to(self.device)
                     batch_x[:,i, 0] = 1
+                    outputs,pred_linears,pred_non_linears = self.model(batch_x,1)
                     li_weight[i,:]=pred_linears[j][0,:,0]-li_bias
                     no_weight[i,:]=pred_non_linears[j][0,:,0]-no_bias
                 plot_heatmap(li_weight.detach().cpu().numpy(),visual_path+str(j+1)+'li_w.png')
